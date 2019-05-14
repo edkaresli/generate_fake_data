@@ -12,15 +12,15 @@ const pool = new Pool({
   port: dbconfig.port,
 });
 
-faker.seed(123);
+faker.seed(1000);
 
 let people = [];
 
-for(let i = 0; i < 10; i++) {
+for(let i = 0; i < 40; i++) {
   let fname = faker.name.firstName();
   let lname = faker.name.lastName();  
   let ob = {
-      user_id:      i,
+    //  user_id:      i,
       first_name:   fname,
       last_name:    lname,
       email:        faker.internet.email(fname, lname),
@@ -38,16 +38,17 @@ let preparedStatememnt = (data) => {
     let values = '';
 
     let row = {};
+
     for (let i = 0; i < data.length - 1; i++) {
         row = data[i];
-        let value = `(${row.first_name}, ${row.last_name}, ${row.email}, ${row.phone_number}, ${row.job_title})`;        
+        let value = `(\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;        
         value += ', ';
         values += value;
     }
-
+    // adding the last row now: 
     row = data[data.length - 1];
 
-    values += `(${row.first_name}, ${row.last_name}, ${row.email}, ${row.phone_number}, ${row.job_title})`;
+    values += `(\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;
     values += ';';
 
     return { statement, values };
@@ -55,10 +56,11 @@ let preparedStatememnt = (data) => {
 
 let ob = preparedStatememnt(people);
 
-// console.log(values);
+console.log("Query statement is constructed...");
+
 pool.connect()
     .then(client => {
-        return client.query(ob.statement, ob.values)
+        return client.query(ob.statement + ob.values)
             .then(res => {
                 client.release();
                 console.log(res.rows);
