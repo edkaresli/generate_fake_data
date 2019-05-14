@@ -52,6 +52,7 @@ let preparedStatememnt = (data) => {
 
     return { statement, values };
 }
+
 let ob = preparedStatememnt(people);
 
 // console.log(values);
