@@ -1,0 +1,24 @@
+{
+  "name": "generate_fake_data",
+  "version": "1.0.0",
+  "description": "Use Faker.js to generate fake data and store the data in PostgreSQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edkaresli/generate_fake_data.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edkaresli/generate_fake_data/issues"
+  },
+  "homepage": "https://github.com/edkaresli/generate_fake_data#readme",
+  "dependencies": {
+    "faker": "^4.1.0",
+    "pg": "^7.11.0"
+  }
+}
