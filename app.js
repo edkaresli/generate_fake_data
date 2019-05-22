@@ -13,14 +13,15 @@ const pool = new Pool({
 });
 
 faker.seed(1000);
-
+faker.helpers.replaceSymbols("'");
 let people = [];
 
 for(let i = 0; i < 40; i++) {
-  let fname = faker.name.firstName();
-  let lname = faker.name.lastName();  
+  let uuid = faker.random.uuid(); 
+  let fname = faker.name.firstName().replace("'", "\'");
+  let lname = faker.name.lastName().replace("'", "\'");  
   let ob = {
-    //  user_id:      i,
+      user_id:      uuid,
       first_name:   fname,
       last_name:    lname,
       email:        faker.internet.email(fname, lname),
@@ -33,7 +34,7 @@ for(let i = 0; i < 40; i++) {
 
 // console.log(people);
 let preparedStatememnt = (data) => {
-    let statement = `INSERT INTO users(first_name, last_name, email, phone_number, job_title) 
+    const statement = `INSERT INTO users(user_id, first_name, last_name, email, phone_number, job_title) 
     VALUES `;
      
     let values = '';
@@ -42,36 +43,39 @@ let preparedStatememnt = (data) => {
 
     for (let i = 0; i < data.length - 1; i++) {
         row = data[i];
-        let value = `(\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;        
+        let value = `(\'${row.user_id}\',\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;        
         value += ', ';
         values += value;
     }
     // adding the last row now: 
     row = data[data.length - 1];
 
-    values += `(\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;
+    values += `(\'${row.user_id}\',\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;
     values += ';';
     // I'll export data instead of values, because I need the array format...
     // return { statement, values };
-    return { statement, data }
+    return { statement, values };
 }
 
 let ob = preparedStatememnt(people);
 
 console.log("Query statement is constructed...");
+console.log(ob.statement + ob.values);
 
 pool.connect()
-    .then(client => {
-      try {
-        for (let i = 0; i < ob.length; i++) {
-          let row = ob.values[i];
-          let value = `(\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`; 
-          value += ';';
-          client.query(ob.statement, value);
-        }        
-      } catch (error) {
-        console.log(error);
-      }
+    .then(client => {   
+      console.log("Connected to DB...");   
+      /*
+      for (let i = 0; i < ob.data.length; i++) {
+        let row = ob.data[i];
+        let value = `(\'${row.user_id}\', \'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`; 
+        value += ';';
+        console.log(ob.statement + value);
+        client.query(ob.statement + value);
+      } 
+      */
+      client.query(ob.statement + ob.values);       
+      
         /*
         return client.query(ob.statement + ob.values)
             .then(res => {

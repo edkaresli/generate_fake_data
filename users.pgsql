@@ -2,7 +2,7 @@ DROP TABLE public.users;
 
 CREATE TABLE public.users
 (
-  user_id serial NOT NULL,
+  user_id text NOT NULL,
   first_name text NOT NULL,
   last_name text NOT NULL,
   email text NOT NULL,
