@@ -13,13 +13,13 @@ const pool = new Pool({
 });
 
 faker.seed(1000);
-faker.helpers.replaceSymbols("'");
+
 let people = [];
 
-for(let i = 0; i < 40; i++) {
+for(let i = 0; i < 1000; i++) {
   let uuid = faker.random.uuid(); 
-  let fname = faker.name.firstName().replace("'", "\'");
-  let lname = faker.name.lastName().replace("'", "\'");  
+  let fname = faker.name.firstName(); 
+  let lname = faker.name.lastName(); 
   let ob = {
       user_id:      uuid,
       first_name:   fname,
@@ -32,7 +32,6 @@ for(let i = 0; i < 40; i++) {
   people.push(ob);
 }
 
-// console.log(people);
 let preparedStatememnt = (data) => {
     const statement = `INSERT INTO users(user_id, first_name, last_name, email, phone_number, job_title) 
     VALUES `;
@@ -43,13 +42,18 @@ let preparedStatememnt = (data) => {
 
     for (let i = 0; i < data.length - 1; i++) {
         row = data[i];
+        row.first_name = row.first_name.replace("'", "''");
+        row.last_name = row.last_name.replace("'", "''");
+        row.job_title = row.job_title.replace("'", "''");
         let value = `(\'${row.user_id}\',\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;        
         value += ', ';
         values += value;
     }
     // adding the last row now: 
     row = data[data.length - 1];
-
+    row.first_name = row.first_name.replace("'", "''");
+    row.last_name = row.last_name.replace("'", "''");
+    row.job_title = row.job_title.replace("'", "''");
     values += `(\'${row.user_id}\',\'${row.first_name}\', \'${row.last_name}\', \'${row.email}\', \'${row.phone_number}\', \'${row.job_title}\')`;
     values += ';';
     // I'll export data instead of values, because I need the array format...
