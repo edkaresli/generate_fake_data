@@ -19,6 +19,6 @@
   "homepage": "https://github.com/edkaresli/generate_fake_data#readme",
   "dependencies": {
     "faker": "^4.1.0",
-    "pg": "^7.11.0"
+    "pg": "^8.11.0"
   }
 }
